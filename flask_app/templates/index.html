@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <link rel="icon" href='image.png' type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            color: #333;
+        }
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diabetes Prediction</h1>
+        <form id="prediction-form">
+            <div class="form-group">
+                <label for="Pregnancies">Pregnancies:</label>
+                <input type="number" id="Pregnancies" name="Pregnancies" required>
+            </div>
+            <div class="form-group">
+                <label for="Glucose">Glucose:</label>
+                <input type="number" id="Glucose" name="Glucose" required>
+            </div>
+            <div class="form-group">
+                <label for="BloodPressure">Blood Pressure:</label>
+                <input type="number" id="BloodPressure" name="BloodPressure" required>
+            </div>
+            <div class="form-group">
+                <label for="SkinThickness">Skin Thickness:</label>
+                <input type="number" id="SkinThickness" name="SkinThickness" required>
+            </div>
+            <div class="form-group">
+                <label for="Insulin">Insulin:</label>
+                <input type="number" id="Insulin" name="Insulin" required>
+            </div>
+            <div class="form-group">
+                <label for="BMI">BMI:</label>
+                <input type="number" id="BMI" name="BMI" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="DiabetesPedigreeFunction">Diabetes Pedigree Function:</label>
+                <input type="number" id="DiabetesPedigreeFunction" name="DiabetesPedigreeFunction" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="Age">Age:</label>
+                <input type="number" id="Age" name="Age" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Predict</button>
+            </div>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+ document.getElementById('prediction-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = parseFloat(value);
+    });
+
+    const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+    if (result.result === 0) {
+        document.getElementById('result').textContent = `Prediction: This person is not diabetic.`;
+    } else if (result.result === 1) {
+        document.getElementById('result').textContent = `Prediction: This person is diabetic.`;
+    } else {
+        document.getElementById('result').textContent = `Prediction: Unknown result`;
+    }
+});
+
+    </script>
+</body>
+</html>
